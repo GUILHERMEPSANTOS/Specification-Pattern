@@ -1,13 +1,14 @@
 
+using System.Linq.Expressions;
 using Specification.Program.Models;
 
 namespace Specification.Program.Specifications
 {
-    public class TypeSmartSpec<T> : Specification<T> where T : Mobile
+    public class TypeSmartSpec : Specification<Mobile>
     {
-        public override bool IsSatisfiedBy(T mobile)
+        public override Expression<Func<Mobile, bool>> ToExpression()
         {
-            return mobile.Type == Models.Type.Smart;
+            return mobile => mobile.Type == Models.Type.Smart;
         }
     }
 }

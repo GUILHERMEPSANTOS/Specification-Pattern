@@ -1,10 +1,11 @@
+using System.Linq.Expressions;
 using Specification.Program.Models;
 
-namespace Specification.Program.Specifications; 
-public class SamsungBrandSpec<T> : Specification<T> where T : Mobile
+namespace Specification.Program.Specifications;
+public class SamsungBrandSpec : Specification<Mobile>
 {
-    public override bool IsSatisfiedBy(T mobile)
+    public override Expression<Func<Mobile, bool>> ToExpression()
     {
-        return mobile.BrandName == BrandName.Samsung;
+        return mobile => mobile.BrandName == BrandName.Samsung;
     }
 }

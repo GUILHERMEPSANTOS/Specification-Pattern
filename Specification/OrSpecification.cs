@@ -1,18 +1,25 @@
-namespace Specification;
+using System.Linq.Expressions;
 
-public class OrSpecification<T> : Specification<T>
+namespace Specification
 {
-    private readonly ISpecification<T> _left;
-    private readonly ISpecification<T> _right;
-
-    public OrSpecification(ISpecification<T> left, ISpecification<T> right)
+    public class OrSpecification<T> : Specification<T>
     {
-        _left = left;
-        _right = right;
-    }
+        private readonly Specification<T> _left;
+        private readonly Specification<T> _right;
 
-    public override bool IsSatisfiedBy(T o)
-    {
-        return _left.IsSatisfiedBy(o) || _right.IsSatisfiedBy(o);
+        public OrSpecification(Specification<T> left, Specification<T> right)
+        {
+            _left = left;
+            _right = right;
+        }
+        public override Expression<Func<T, bool>> ToExpression()
+        {
+            var leftExpression = _left.ToExpression();
+            var rightExpression = _right.ToExpression();
+
+            var invokedExpression = Expression.Invoke(rightExpression, leftExpression.Parameters);
+
+            return (Expression<Func<T, bool>>)Expression.Lambda(Expression.OrElse(leftExpression.Body, invokedExpression), leftExpression.Parameters);
+        }
     }
 }
